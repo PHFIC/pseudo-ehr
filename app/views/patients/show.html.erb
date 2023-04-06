@@ -23,6 +23,12 @@
         </div>
       <% end %>
 
+      <% if @care_plans.present? %>
+        <div class='col-lg-6 card-container'>
+          <%= render 'care_plans-card' %>
+        </div>
+      <% end %>
+
       <!--
       <% if @medications.present? %>
         <div class='col-6 card-container'>
