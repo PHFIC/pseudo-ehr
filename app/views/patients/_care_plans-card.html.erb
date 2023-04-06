@@ -22,7 +22,7 @@
       <tbody>
         <% @conditions.each do |condition| %>
           <tr>
-            <td><%= sanitize( condition.code&.text ) %> (<%= sanitize( condition.code&.coding&.first&.system ) %>/<%= sanitize( condition.code&.coding&.first&.code ) %>)</td>
+            <td><%= display_code(condition.code) %>)</td>
             <td><%= sanitize( condition.clinicalStatus&.text ) %></td>
             <td><%= sanitize( condition.verificationStatus&.text ) %></td>
             <td>
