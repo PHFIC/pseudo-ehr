@@ -11,6 +11,18 @@
         </div>
       <% end %>
 
+      <% if @conditions.present? %>
+        <div class='col-lg-6 card-container'>
+          <%= render 'conditions-card' %>
+        </div>
+      <% end %>
+
+      <% if @questionnaire_responses.present? %>
+        <div class='col-lg-6 card-container'>
+          <%= render 'questionnaire_responses-card' %>
+        </div>
+      <% end %>
+
       <!--
       <% if @medications.present? %>
         <div class='col-6 card-container'>
