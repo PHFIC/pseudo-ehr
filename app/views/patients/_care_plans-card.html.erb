@@ -4,8 +4,7 @@
   </div>
   <div class='card-body'>
     <% @care_plans.each do |care_plan| %>
-      <%= sanitize(care_plan.text&.div) %>
-      <span class="badge <%= care_plan.status == 'active' ? 'text-bg-primary' : 'text-bg-secondary' %>"><%= sanitize(care_plan.status) %></span>
+      <%= sanitize(care_plan.text&.div) %> <span class="badge <%= care_plan.status == 'active' ? 'text-bg-primary' : 'text-bg-secondary' %>"><%= sanitize(care_plan.status) %></span>
       <p class="text-muted"><%= display_date( care_plan.created&.to_date ) %></p>
       <hr />
     <% end %>

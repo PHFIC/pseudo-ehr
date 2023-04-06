@@ -29,6 +29,12 @@
         </div>
       <% end %>
 
+      <% if @specimens.present? %>
+        <div class='col-lg-6 card-container'>
+          <%= render 'specimens-card' %>
+        </div>
+      <% end %>
+
       <!--
       <% if @medications.present? %>
         <div class='col-6 card-container'>
