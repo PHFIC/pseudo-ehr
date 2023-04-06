@@ -115,7 +115,7 @@ module ApplicationHelper
     return sanitize("No code") if !code
     return display_code( FHIR::CodeableConcept.new({coding: [code]}) ) if code.class == FHIR::Coding
 
-    display = code.text
+    display = code.text if code.respond_to? :text
     display ||= code.coding&.first&.display
 
     system = case code.coding&.first&.system&.gsub('https://', 'http://')
