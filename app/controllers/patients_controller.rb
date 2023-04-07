@@ -78,7 +78,7 @@ class PatientsController < ApplicationController
     @questionnaire_responses = []
     @encounters              = []
     @specimens               = []
-    # @care_plans              = []
+    @care_plans              = []
     @conditions              = []
     @locations               = []
     
@@ -93,6 +93,8 @@ class PatientsController < ApplicationController
         @encounters << entry.resource
       when "Condition"
         @conditions << entry.resource
+      when "CarePlan"
+        @care_plans << entry.resource
       when "Location"
         @locations << entry.resource
       end

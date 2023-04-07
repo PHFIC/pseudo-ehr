@@ -112,7 +112,33 @@ module ApplicationHelper
   #-----------------------------------------------------------------------------
 
   def display_code(code)
-    sanitize("#{code.coding[0].display} (#{code.coding[0].code})") if code
+    return sanitize("No code") if !code || !code.coding&.first
+
+    display = code.text if code.respond_to? :text
+    display ||= code.coding.first.display
+
+    system_url = code.coding.first.system&.gsub('https://', 'http://')
+
+    system = case system_url
+             when 'http://snomed.info/sct' then 'SNOMED'
+             when 'http://loinc.org' then 'LOINC'
+             # TODO: many others from https://terminology.hl7.org/external_terminologies.html
+             # exclude HL7 ones because they never link and look bad
+             else
+                nil
+             end
+
+    code_value = code.coding.first.code
+
+    if system
+        sanitize("#{display} (#{system}-#{code_value})")
+    elsif display
+        sanitize("#{display} (#{code_value})")
+    elsif code_value
+        sanitize(code_value)
+    else
+        sanitize("No code")
+    end
   end
 
 	#-----------------------------------------------------------------------------

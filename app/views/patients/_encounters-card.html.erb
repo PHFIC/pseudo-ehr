@@ -19,7 +19,7 @@
           <tr>
             <td><%= display_date(encounter.period&.start&.to_date) %></td>
             <td><%= "#{encounter&.local_class&.display} (#{encounter&.local_class&.code})" %></td>
-            <td><%= encounter.status %><%#  display_human_name(encounter&.providers&.first&.fetch(:individual)&.name&.first) %></td>
+            <td><%= encounter.status %></td>
             <td><%= sanitize( encounter.location&.first&.location&.display ) %></td>
             <td><%= link_to "View", encounter_path(encounter.id) %></td>
           </tr>
