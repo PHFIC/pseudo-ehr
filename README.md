@@ -17,7 +17,7 @@ To pull in remote `pseudo-ehr` from github for local development:
 
 ```
 cd ~/path/to/your/workspace/
-git clone https://github.com/paciowg/pseudo-ehr.git
+git clone https://github.com/phfic/pseudo-ehr.git
 cd pseudo-ehr
 ```
 
@@ -33,7 +33,7 @@ To launch server:
 rails s
 ```
 
-To use the web client, open your web browser to <http://localhost:8080> and connect to FHIR server `http://hapi.fhir.org/baseR4`. This will lead you a pagination of all patients. Use the search bar in the top right to search for `Spade`. The FHIR search should return one patient and you can open its profile. **TEST PATIENT: Sam Spade, ID: 8127768**.
+To use the web client, open your web browser to <http://localhost:8080> and connect to FHIR server `http://hapi.fhir.org/baseR4`. This will lead you to a pagination of all patients. Use the search bar in the top right to search for `Spade`. The FHIR search should return one patient and you can open its profile. **TEST PATIENT: Sam Spade, ID: 8127768**.
 
 
 ## Copyright
