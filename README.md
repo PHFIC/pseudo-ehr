@@ -1,56 +1,41 @@
 # Pseudo EHR
 
-The Pseudo EHR is a component of the architecture used during the PACIO / eLTSS
-connectathon tracks.
+![FHIR R4](https://img.shields.io/badge/FHIR-R4-orange)
+![Ruby 3.1.3](https://img.shields.io/badge/Ruby-3.1.3-red)
 
-The Pseudo EHR system that receives Structure Data Capture-based Post-Acute Care 
-(PAC) assessment data from the PAC Assessment App, extracts the information 
-in the QuestionnaireResponses into PACIO Functional and Cognitive Status 
-resources, and pushes them to the Health Data Manager.
+The Pseudo EHR is a demo FHIR client software for the Public Health FHIR Implementation Collaborative (PHFIC). **Runs on port 8080**
 
-## Installation
+
+## Dependencies
+ - Ruby 3.1.3
+ - [Bundler](https://bundler.io/)
+
+
+## Quick Start
 
 To pull in remote `pseudo-ehr` from github for local development:
 
 ```
 cd ~/path/to/your/workspace/
 git clone https://github.com/paciowg/pseudo-ehr.git
+cd pseudo-ehr
 ```
 
-## Running
+To install Ruby dependencies:
 
-Since this app is configured for heroku deployment, running it is slightly 
-more effort than just `rails s`.
+```
+bundle install
+```
 
-1. To start, you must be running `postgres`
+To launch server:
 
-    ```
-    pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-    ```
-    (This gets old. Personally, I made a `pg_start` alias for this command)
+```
+rails s
+```
 
-2. Next, run the rails app the way you would any other
+To use the web client, open your web browser to <http://localhost:8080> and connect to FHIR server `http://hapi.fhir.org/baseR4`. This will lead you a pagination of all patients. Use the search bar in the top right to search for `Spade`. The FHIR search should return one patient and you can open its profile. **TEST PATIENT: Sam Spade, ID: 8127768**.
 
-    ```
-    cd ~/path/to/your/app/
-    rails s
-    ```
-
-3. Now you should be able to see it up and running at `localhost:3000`
-
-4. When done, gracefully stop your `puma` server
-
-    ```
-    Control-C
-    ```
-
-5. Finally, stop your `postgres` instance
-
-    ```
-    pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log stop
-    ```
-    (This also gets old. Personally, I made a `pg_stop` alias for this command)
 
 ## Copyright
 
-Copyright 2020 The MITRE Corporation
+Copyright 2023 The MITRE Corporation
