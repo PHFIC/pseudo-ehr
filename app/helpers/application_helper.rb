@@ -112,39 +112,32 @@ module ApplicationHelper
   #-----------------------------------------------------------------------------
 
   def display_code(code)
-    return sanitize("No code") if !code
-    return display_code( FHIR::CodeableConcept.new({coding: [code]}) ) if code.class == FHIR::Coding
+    return sanitize("No code") if !code || !code.coding&.first
 
     display = code.text if code.respond_to? :text
-    display ||= code.coding&.first&.display
+    display ||= code.coding.first.display
 
-    system = case code.coding&.first&.system&.gsub('https://', 'http://')
+    system_url = code.coding.first.system&.gsub('https://', 'http://')
+
+    system = case system_url
              when 'http://snomed.info/sct' then 'SNOMED'
              when 'http://loinc.org' then 'LOINC'
-             when 'http://www.ama-assn.org/go/cpt' then 'CPT'
-             when 'urn:iso:std:iso:11073:10101' then 'MDC'
              # TODO: many others from https://terminology.hl7.org/external_terminologies.html
              # exclude HL7 ones because they never link and look bad
              else
                 nil
              end
 
-    link_display = "(#{system}-#{code.coding&.first&.code})" if system && code.coding&.first&.code
-    link_display ||= "(#{code.coding&.first&.code})" if code.coding&.first&.code
-    
-    link_href = "#{code.coding&.first&.system}/#{code.coding&.first&.code}" # NOTE: no guarantee this always links
-    link_href = '#' if link_href == '/'
-    link_href = "#{code.coding&.first&.system}" if link_href =~ /hl7/ # fix for some HL7 valuesets, but still not gaurantee to work
-    
-    if( !display && !link_display )
-      logger.warn "Found empty FHIR::CodeableConcept: #{code.to_json}"
-      return sanitize("No code")
-    elsif( !display )
-      return sanitize( link_to(link_display, link_href) )
-    elsif( !link_display )
-      return sanitize(display)
+    code_value = code.coding.first.code
+
+    if system
+        sanitize("#{display} (#{system}-#{code_value})")
+    elsif display
+        sanitize("#{display} (#{code_value})")
+    elsif code_value
+        sanitize(code_value)
     else
-      return sanitize("#{display} " + link_to(link_display, link_href))
+        sanitize("No code")
     end
   end
 

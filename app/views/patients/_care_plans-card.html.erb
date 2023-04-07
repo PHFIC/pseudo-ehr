@@ -6,17 +6,15 @@
     <% @care_plans.each do |care_plan| %>
       <div class="row d-flex justify-content-between">
         <div>
-          <%# Relies on Rails sanitize to not be an injection attack... %>
           <%= sanitize(care_plan.text&.div) %>
         </div>
         <div>
           <span class="badge <%= care_plan.status == 'active' ? 'text-bg-primary' : 'text-bg-secondary' %>"><%= sanitize(care_plan.status) %></span>
         </div>
+      </div>
       <!-- FIXME: <p>Category: <%# display_code( care_plan.category ) %></p> -->
       <p><%= display_date( care_plan.created&.to_date ) %></p>
       <hr />
     <% end %>
-
-
   </div>
 </div>
