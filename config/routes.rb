@@ -65,6 +65,7 @@ Rails.application.routes.draw do
 
   get 'restart',        to: 'welcome#restart'
   root 'welcome#index'
+  post '/welcome', to: 'welcome#create'
 
   # Define 'FHIR' API for retrieving patients and converting questionnaire 
   # response resources posts to PACIO resources

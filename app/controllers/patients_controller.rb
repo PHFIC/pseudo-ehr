@@ -9,6 +9,7 @@ class PatientsController < ApplicationController
   # GET /patients?name=   (preform FHIR search with name param)
   # GET /patients?page=   (directly fetch a pagination url from Bundle.link[i].url)
   def index
+    byebug
     if params[:name]
       fhir_response = @fhir_client.search(FHIR::Patient, search: {parameters: {name: params[:name]}})
       fhir_bundle = fhir_response.resource

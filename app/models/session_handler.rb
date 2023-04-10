@@ -78,10 +78,10 @@ class SessionHandler
   # 
   # *Returns* - This session's instance of FHIR::Client
 
-  def self.fhir_client(session_id)
+  def self.fhir_client(session_id, server_url = nil)
     connection = from_storage(session_id, "connection")
     if connection.nil?
-      establish(session_id)
+      establish(session_id, server_url)
       connection = from_storage(session_id, "connection")
     end
 
