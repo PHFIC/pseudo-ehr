@@ -147,7 +147,7 @@ class SplaschObservation < Resource
 	end
 
 	def is_splasch_observation()
-		@code.coding.each do |coding|
+		@code&.coding&.each do |coding|
 			splasch_category = CATEGORIES.select {|category_name, category| category[:system] == coding.system}
 			if splasch_category.empty?
 				return false

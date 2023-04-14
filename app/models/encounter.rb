@@ -17,6 +17,8 @@ class Encounter < Resource
     #-----------------------------------------------------------------------------
 
     def initialize(fhir_encounter, fhir_client)
+        @fhir_queries        = []
+
         @fhir_client         = fhir_client
         @id                  = fhir_encounter.id
         @status              = fhir_encounter.status
@@ -29,14 +31,39 @@ class Encounter < Resource
         @conditions          = fhir_encounter.diagnosis      # condition resource, use, rank
         @hospitalization     = fhir_encounter.hospitalization
         @location            = fhir_encounter.location        # list of locations the patient has been to
-        @service_provider    = @fhir_client.try(:read, nil, fhir_encounter.serviceProvider&.reference)&.resource&.name
+
+        # @service_provider    = service_provider(fhir_encounter.serviceProvider)
+        # @subject             = subject(fhir_encounter.subject)
         
-        fhir_response        = @fhir_client.read(nil, fhir_encounter.subject.reference)
-        @subject             = fhir_response.resource
-        # To display the fhir queries
-        @fhir_queries        = ["#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"]
+        unless fhir_encounter.serviceProvider.nil?
+            fhir_response        = @fhir_client.try(:read, nil, fhir_encounter.serviceProvider.reference)
+            @service_provider    = fhir_response&.resource&.name
+            @fhir_queries        << "#{fhir_response&.request[:method]&.capitalize} #{fhir_response&.request[:url]}"
+        end
+
+        unless fhir_encounter.subject.nil?
+            fhir_response        = @fhir_client.read(nil, fhir_encounter.subject.reference)
+            @subject             = fhir_response&.resource
+            @fhir_queries        << "#{fhir_response&.request[:method]&.capitalize} #{fhir_response&.request[:url]}"
+        end
     end
     
+    # #-----------------------------------------------------------------------------
+
+    # def service_provider(service_provider)
+    #     fhir_response        = @fhir_client.try(:read, nil, service_provider&.reference)
+    #     @fhir_queries        << "#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"
+    #     return fhir_response&.resource
+    # end
+
+    # #-----------------------------------------------------------------------------
+
+    # def subject(subject)
+    #     fhir_response        = @fhir_client.try(:read, nil, subject&.reference)
+    #     @fhir_queries        << "#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"
+    #     return fhir_response&.resource
+    # end
+
     #-----------------------------------------------------------------------------
 
     def reassessment_timepoints

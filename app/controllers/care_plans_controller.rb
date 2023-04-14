@@ -79,8 +79,10 @@ class CarePlansController < ApplicationController
     
     def set_care_plan
       # @care_plan = CarePlan.find(params[:id])
-      fhir_care_plan = @fhir_client.read(FHIR::CarePlan, params[:id]).resource
+      fhir_response = @fhir_client.read(FHIR::CarePlan, params[:id])
+      fhir_care_plan = fhir_response.resource
       @care_plan = CarePlan.new(fhir_care_plan, @fhir_client) unless fhir_care_plan.nil?
+      @fhir_queries = [ "#{fhir_response.request[:method].upcase} #{fhir_response.request[:url]}"]
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

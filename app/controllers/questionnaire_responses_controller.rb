@@ -11,11 +11,16 @@ class QuestionnaireResponsesController < ApplicationController
   # GET /questionnaire_responses/1.json
   def show
     fhir_client = SessionHandler.fhir_client(session.id)
-    fhir_questionnaire_response = fhir_client.read(FHIR::QuestionnaireResponse, params[:id]).resource
-    @questionnaire_response = QuestionnaireResponse.new(fhir_questionnaire_response) unless fhir_questionnaire_response.nil?
+    fhir_response = fhir_client.read(FHIR::QuestionnaireResponse, params[:id])
+    fhir_questionnaire_response = fhir_response.resource
 
-    fhir_questionnaire = fhir_client.read(FHIR::Questionnaire, @questionnaire_response.questionnaire.split('/').last).resource
-    @questionnaire              = EltssQuestionnaire.new(fhir_questionnaire) unless fhir_questionnaire.nil?
+    @questionnaire_response = QuestionnaireResponse.new(fhir_questionnaire_response) unless fhir_questionnaire_response.nil?
+    @fhir_queries = [ "#{fhir_response.request[:method].upcase} #{fhir_response.request[:url]}" ]
+
+    unless @questionnaire_response.questionnaire.nil?
+      fhir_questionnaire = fhir_client.read(FHIR::Questionnaire, @questionnaire_response.questionnaire.split('/').last).resource
+      @questionnaire = EltssQuestionnaire.new(fhir_questionnaire) unless fhir_questionnaire.nil?
+    end
   end
 
   # GET /questionnaire_responses/new

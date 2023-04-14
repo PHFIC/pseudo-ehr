@@ -29,24 +29,30 @@ class PatientsController < ApplicationController
       fhir_response = @fhir_client.search(FHIR::Patient)
       fhir_bundle = fhir_response.resource
     end
-    @patients = fhir_bundle.entry.collect{ |singleEntry| singleEntry.resource }.compact unless fhir_bundle.nil?
-    
-    # Display the fhir query being run on the UI to help implementers
-    if fhir_response
-        @fhir_query = "#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"
-    else # pagination case
-        @fhir_query = "GET #{params[:page]}"
-    end
 
-    # Do pagination if bundle supports it
-    if fhir_bundle.link
-      logger.debug "Parsing bundle pagination!!"
-      if fhir_bundle.link.any? { |x| x.relation == "next" }
-        @next_url = patients_url + '?page=' + CGI.escape( fhir_bundle.link.select{ |x| x.relation == "next" }.fetch(0).url )
+    unless fhir_bundle.nil?
+      @patients = fhir_bundle.entry.collect{ |singleEntry| singleEntry.resource }.compact unless fhir_bundle.nil?
+      
+      # Display the fhir query being run on the UI to help implementers
+      if fhir_response
+          @fhir_query = "#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"
+      else # pagination case
+          @fhir_query = "GET #{params[:page]}"
       end
-      if fhir_bundle.link.any? { |x| x.relation == "previous" }
-        @prev_url = patients_url + '?page=' + CGI.escape( fhir_bundle.link.select{ |x| x.relation == "previous" }.fetch(0).url )
+
+      # Do pagination if bundle supports it
+      if fhir_bundle&.link
+        logger.debug "Parsing bundle pagination!!"
+        if fhir_bundle.link.any? { |x| x.relation == "next" }
+          @next_url = patients_url + '?page=' + CGI.escape( fhir_bundle.link.select{ |x| x.relation == "next" }.fetch(0).url )
+        end
+        if fhir_bundle.link.any? { |x| x.relation == "previous" }
+          @prev_url = patients_url + '?page=' + CGI.escape( fhir_bundle.link.select{ |x| x.relation == "previous" }.fetch(0).url )
+        end
       end
+    else
+      flash[:alert] = JSON.parse(fhir_response.response[:body])["issue"].first["diagnostics"]
+      redirect_to patients_path
     end
 
     # renders patient/index instead

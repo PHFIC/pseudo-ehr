@@ -1,28 +1,30 @@
 <section class='container'>
   <section class='row'>
-  	<h2>
-  		Name: <%= sanitize(@questionnaire.name) %><br />
-  		Status: <%= sanitize(@questionnaire_response.status) %>
+  	<h2 style="margin-bottom: 30px;">
+      Patient: <%= @questionnaire_response.subject.display %>
+  		<!--Name: <%# sanitize(@questionnaire.name) %>-->
+  		<% if @questionnaire_response&.status == "completed" %>
+          <span class="badge text-bg-success" style="float: right;">completed</span>
+      <% elsif @questionnaire_response&.status %>
+          <span class="badge text-bg-warning" style="float: right;"><%= sanitize(@questionnaire_response&.status) %></span>
+      <% end %>
   	</h2>
-  	<table class='table table-striped table-dark full-status'>
-  		<tr>
-  			<th>Question</th>
-  			<th>Response</th>
-  		</tr>
- 			<% @questionnaire.item.each do |question| %>
-	  		<tr>
-	  			<td><%= question.text %></td>
-                  <td>
-                  <% @questionnaire_response.item.each do |answer| %>
-                    <% if answer.linkId == question.linkId %>
-                        <% answer.answer.each do |value| %>
-                            <%= value.value %>
-                        <% end %>
-                    <% end %>
-                  <% end %>
-                  </td>
-	  		</tr>
-            <% end %>
-	  </table>
+    <br />
+    <table class='table table-striped table-dark status'>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Response</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @questionnaire_response&.item&.each do |item| %>
+          <tr>
+            <td><%= sanitize(item.text) %></td>
+            <td><%= sanitize(item.answer&.first&.valueCoding&.display) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
 	</section>
 </section>

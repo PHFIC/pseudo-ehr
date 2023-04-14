@@ -14,7 +14,8 @@ class WelcomeController < ApplicationController
   end
 
   def create
-    SessionHandler.fhir_client(session.id, params[:server_url])
+    server_url = params[:server_url].empty? ? DEFAULT_SERVER : params[:server_url].strip
+    SessionHandler.fhir_client(session.id, server_url)
     redirect_to patients_path
   end
 
