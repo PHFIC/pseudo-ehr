@@ -33,8 +33,16 @@ To launch server:
 rails s
 ```
 
-To use the web client, open your web browser to <http://localhost:8080> and connect to FHIR server `http://hapi.fhir.org/baseR4`. This will lead you to a pagination of all patients. Use the search bar in the top right to search for `Spade`. The FHIR search should return one patient and you can open its profile. **TEST PATIENT: Sam Spade, ID: 8127768**.
+To use the web client, open your web browser to <http://localhost:8080> and connect to FHIR server `http://hapi.fhir.org/baseR4`.
 
+## Dev Notes
+ - [ ] `welcome_controller` manages index, server_url/condition input, and redirect to encounters controller
+ - [ ] `encounters_controller` renders data grid of Syphilis cases (encounters)
+ - [ ] `encounters#show` renders an entire case
+ - [ ] `encounters#edit`, `encounters#update`, & `encounters#destroy` give you full manual stewardship over data
+ - [ ] `encounters#new` lets you input a new Syphilis case, and `encounters#create` does FHIR create on server
+ - [ ] consider new controller/action for aggregate/geographic data rendering
+ - [ ] `rails t test/integration/phfic_test.rb` tests the above
 
 ## Copyright
 
