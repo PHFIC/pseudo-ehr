@@ -3,7 +3,7 @@
     <div class="navbar-brand mx-2">
       <%= link_to root_path do %>
         <%= image_tag "logo.svg", id: "logo", alt: "(logo)" %>
-        <div class="header-title">Pseudo EHR</div>
+        <div class="header-title fs-2">Public Health Surveillance | Pseudo EHR</div>
       <% end %>
     </div>
 
@@ -24,7 +24,7 @@
       </ul>
 
       <form action="/patients" method="get" class="d-flex ms-auto">
-        <input type="search" name="name" id="name" class="form-control" placeholder="Search patient by name" aria-lable="Search">
+        <input type="search" name="case_id" id="name" class="form-control" placeholder="Search by Encounter ID" aria-lable="Search">
         <button type="submit" class="btn btn-outline-success mx-2">Search</button>
       </form>
     </div>

@@ -1,14 +1,16 @@
-<section class='container'>
-	<h2 class="text-light welcome-text">Connect to a FHIR server</h2>
+<br />
+<section class='container mt-5 pt-5'>
+	<h2 class="text-light welcome-text my-5">Pull Case Surveillance Data from a FHIR Server</h2>
 	<div class='row'>
-		<%= form_tag welcome_path, class: 'form-inline welcome-form d-flex', id: 'server-form' do %>
-			<div class='col'></div>
-			<div class='form-group col-auto last'>
-				<%= text_field_tag :server_url, nil, class: 'form-control form-control-lg',
+		<%= form_tag welcome_path, class: 'form-inline welcome-form d-flex justify-content-center', id: 'server-form' do %>
+			<div class='form-group col mx-3'>
+                <%= select_tag :condition, options_for_select([['Syphilis', 'TODO: Syph code']]), {prompt: 'Select a condition:', class: 'form-select form-select-lg '} %>
+            </div>
+			<div class='form-group col mx-3'>
+				<%= text_field_tag :server_url, nil, class: 'form-control form-control-lg ',
 							       placeholder: 'http://hapi.fhir.org/baseR4' %>
 			</div>
-			<%= button_tag 'Connect', class: 'btn btn-primary col-md-2 mx-3', id: 'server-url' %>
-			<div class='col'></div>
+			<%= button_tag 'Pull Data', class: 'btn btn-primary col-md-2 mx-3', id: 'server-url' %>
 		<% end %>
 	</div>
 </section>
