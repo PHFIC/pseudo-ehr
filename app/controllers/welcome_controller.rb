@@ -11,12 +11,30 @@ class WelcomeController < ApplicationController
   def index
     # Start from scratch
     SessionHandler.disconnect(session.id) if session.id
+
+    # select dropdowns mapping display to MEDSS coding
+    @condition_options = [["Syphilis", "SYPHILIS"]]
+    @stage_options = [
+                      ["Primary", "SYPH_PRIMARY"],
+                      ["Secondary", "SYPH_SECONDARY"],
+                      ["Early Latent", "SYPH_EARLY_LATENT"],
+                      ["Late Latent", "SYPH_LATE_LATENT"],
+                      ["Unknown or Late", "SYPH_UNKNOWN_OR_LATE"]
+                     ]
   end
 
   def create
     server_url = params[:server_url].empty? ? DEFAULT_SERVER : params[:server_url].strip
+    condition = params[:condition]
+    stage = params[:stage]
+
     SessionHandler.fhir_client(session.id, server_url)
-    redirect_to patients_path
+    SessionHandler.store(session.id, 'condition', condition)
+    SessionHandler.store(session.id, 'stage', stage)
+
+    logger.debug "CLIENT START PARAMS: server_url => #{server_url}, condition => #{condition}"
+
+    redirect_to encounters_path
   end
 
   def restart
