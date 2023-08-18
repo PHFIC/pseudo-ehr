@@ -24,8 +24,8 @@ gem 'bootstrap', '~> 5.2'       # bootstrap
 gem 'jquery-rails'              # jQuery
 gem 'jquery-datatables'
 gem 'bootstrap-toggle-rails'    # bootstrap toggle
-gem 'fhir_client', git: 'https://github.com/paciowg/fhir_client.git'		# FHIR client that supports fullUrl for transaction entries
-#gem 'fhir_client', git: 'https://github.com/fhir-crucible/fhir_client.git'  # FHIR client from MITRE's crucible project
+# gem 'fhir_client', git: 'https://github.com/paciowg/fhir_client.git'		# FHIR client that supports fullUrl for transaction entries
+gem 'fhir_client', git: 'https://github.com/fhir-crucible/fhir_client.git'  # FHIR client from MITRE's crucible project
 gem 'rdoc'                      # RDoc for documentation
 gem 'chartkick'					# Integrates chart.js functionality into Ruby
 gem 'masonry-rails'				# JQuery Masonry plugin for use with Rails asset pipeline
