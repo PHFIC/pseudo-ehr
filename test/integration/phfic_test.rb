@@ -18,4 +18,11 @@ class PhficTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "welcome connects to server and queries for a condition and stage" do
+    post welcome_url, params: { server_url: 'https://hapi.fhir.org/baseR4', condition: Condition::CODE_OPTIONS.first.last, stage: Condition::STAGE_OPTIONS.first.last }
+    assert_response :redirect
+
+    follow_redirect!
+    assert_response :success
+  end
 end

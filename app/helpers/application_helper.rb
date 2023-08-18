@@ -217,7 +217,16 @@ module ApplicationHelper
   #-----------------------------------------------------------------------------
 
 	def display_date(datetime)
-		datetime.present? ? sanitize(datetime.strftime('%m/%d/%Y')) : "No date"
+        return "No date" if !datetime.present?
+
+        begin
+            datetime = datetime.to_date if datetime.is_a? String
+        rescue Exception => e
+            Rails.logger.error "Bad date #{datetime} with exception #{e}"
+            return "Bad date"
+        end
+
+		sanitize(datetime.strftime('%m/%d/%Y'))
 	end
 
 	#-----------------------------------------------------------------------------

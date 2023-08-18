@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 ################################################################################
 #
-# eLTSS Condition Model
+# PHFIC Condition Model
 #
-# Copyright (c) 2020 The MITRE Corporation.  All rights reserved.
+# Copyright (c) 2022 The MITRE Corporation.  All rights reserved.
 #
 ################################################################################
 
@@ -12,6 +13,16 @@ class Condition < Resource
 
   attr_reader :id, :text, :clinicalStatus, :verificationStatus, :category,
                 :code, :subject, :onsetDate, :asserter
+
+  #-----------------------------------------------------------------------------
+  CODE_OPTIONS = [["Syphilis", :SYPHILIS]].freeze
+  STAGE_OPTIONS = [
+                   ["Primary", :SYPH_PRIMARY],
+                   ["Secondary", :SYPH_SECONDARY],
+                   ["Early Latent", :SYPH_EARLY_LATENT],
+                   ["Late Latent", :SYPH_LATE_LATENT],
+                   ["Unknown or Late", :SYPH_UNKNOWN_OR_LATE]
+                  ].freeze
 
   #-----------------------------------------------------------------------------
 

@@ -20,21 +20,35 @@ class EncountersController < ApplicationController
         # Ex query:
         # https://hapi.fhir.org/baseR4/Encounter?reason-reference:Condition.code=SYPHILIS&reason-reference:Condition.stage=SYPH_PRIMARY&_revinclude=*&_include=*
         fhir_response = @fhir_client.search(FHIR::Encounter, search: {parameters: { 'reason-reference:Condition.code' => @condition, 'reason-reference:Condition.stage' => @stage, '_revinclude' => '*', '_include' => '*' }})
+        redirect_to(root_path, alert: 'FHIR Query failed, please check if server is running at URL.') and return unless fhir_response
         @fhir_queries = ["#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"]
 
         fhir_bundle = fhir_response.resource
-        logger.debug "============================================"
-        logger.debug fhir_bundle.to_json
-        logger.debug "============================================"
+        # logger.debug "============================================"
+        # logger.debug fhir_bundle.to_json
+        # logger.debug "============================================"
 
         @total = fhir_bundle.total
         @is_paginated = fhir_bundle.link&.any? { |pagination_obj| %w(next previous).any? pagination_obj.relation }
 
         @encounters = fhir_bundle.entry.select{ |entry| entry.resource.resourceType == 'Encounter' }.map{ |entry| entry.resource }
-        @patient_hash = fhir_bundle.entry.select{ |entry| entry.resource.resourceType == 'Patient' }.map{ |entry| [entry.resource.id, entry.resource] }.to_h
-        @condition_hash = fhir_bundle.entry.select{ |entry| entry.resource.resourceType == 'Condition' }.map{ |entry| [entry.resource.id, entry.resource] }.to_h
-        @location_hash = fhir_bundle.entry.select{ |entry| entry.resource.resourceType == 'Location' }.map{ |entry| [entry.resource.id, entry.resource] }.to_h
-        @care_plan_hash = fhir_bundle.entry.select{ |entry| entry.resource.resourceType == 'CarePlan' }.map{ |entry| [entry.resource.id, entry.resource] }.to_h
+        @patients_hash = map_reference_to_resource(fhir_bundle, 'Patient')
+        # @conditions_hash = map_reference_to_resource(fhir_bundle, 'Condition')
+        @locations_hash = map_reference_to_resource(fhir_bundle, 'Location')
+        # @care_plans_hash = map_reference_to_resource(fhir_bundle, 'CarePlan')
+        
+        # GET https://hapi.fhir.org/baseR4/QuestionnaireResponse?patient=Patient/123,Patient/456
+        fhir_response = @fhir_client.search(FHIR::QuestionnaireResponse, search: {parameters: { 'patient' => @patients_hash.keys.join(',') }})
+        redirect_to(root_path, alert: 'FHIR Query failed, please check if server is running at URL.') and return unless fhir_response
+        @fhir_queries << ["#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"]
+        @questionnaire_responses_hash = map_reference_to_resource(fhir_response.resource, 'QuestionnaireResponse')
+
+        # GET https://hapi.fhir.org/baseR4/Specimen?patient=Patient/123,Patient/456
+        fhir_response = @fhir_client.search(FHIR::QuestionnaireResponse, search: {parameters: { 'patient' => @patients_hash.keys.join(',') }})
+        redirect_to(root_path, alert: 'FHIR Query failed, please check if server is running at URL.') and return unless fhir_response
+        @fhir_queries << ["#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"]
+        @specimen_hash = map_reference_to_resource(fhir_response.resource, 'Specimen')
+
     end
     
     def show
@@ -51,5 +65,13 @@ class EncountersController < ApplicationController
     def set_fhir_client
         @fhir_client = SessionHandler.fhir_client(session.id)
     end
-    
+
+    # Params:
+    #   bundle: FHIR::Bundle instance
+    #   resource: String, FHIR model name
+    # Returns a hash { <fhir reference> => <fhir model object> } of all instances of one type of resource in a Bundle
+    # Ex: { 'Patient/123' => FHIR::Patient with id=123 }
+    def map_reference_to_resource(bundle, resource)
+        bundle.entry.select{ |entry| entry.resource.resourceType == resource }.map{ |entry| [resource + '/' + entry.resource.id, entry.resource] }.to_h    
+    end
 end

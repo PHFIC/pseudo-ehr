@@ -1,10 +1,9 @@
 <section class='container'>
-  <% if false %>
   <section class='dashboard-header-text'>
-    <%# render partial: 'patient-info' %>
+    <%# TODO more robust formatting/link to displays %>
+    <h2><%= @stage %> <%= @condition %></h2>
     <br>
   </section>
-  <% end %>
 
   <section class='row'>
     <table class='table table-striped table-dark status caption-top' style="width:50%; margin-bottom:5px">
@@ -21,8 +20,14 @@
       <caption><h2>Encounters list</h2></caption>
       <thead>
         <tr>
-          <th>Encounter Date</th>
-          <th>Encounter Type</th>
+          <th>Case #</th>
+          <th>Last Updated</th>
+          <th>Specimen Date</th>
+          <th>Episode Date</th>
+          <th>Full Name</th>
+          <th>DOB</th>
+          <th>Gender</th>
+          <th>Pregnancy</th>
           <th>Options</th>
         </tr>
       </thead>
@@ -30,8 +35,14 @@
 
         <% @encounters.each do |encounter| %>
           <tr>
-            <td><%= display_date(encounter.period&.start&.to_date) %></td>
-            <td><%= display_code(encounter.type&.first) %></td>
+            <td><%= encounter.identifier&.first&.value %><%# TODO do the proper query %></td>
+            <td><%= display_date encounter.meta&.lastUpdated %></td>
+            <td><%= display_date @specimen_hash.values.select{|specimen| specimen.subject == encounter.subject}.first&.collection&.collectedDateTime %></td>
+            <td><%= display_date encounter.period&.start %></td>
+            <td><%= @patients_hash[encounter.subject.reference]&.gender %></td>
+            <td><%= display_human_name @patients_hash[encounter.subject.reference]&.name&.first %></td>
+            <td><%= display_date @patients_hash[encounter.subject.reference]&.birthDate %></td>
+            <td>TODO</td>
             <td><%= link_to "View", encounter_path(encounter.id) %></td>
           </tr>
         <% end %>
