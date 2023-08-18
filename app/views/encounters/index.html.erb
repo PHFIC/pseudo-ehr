@@ -37,12 +37,12 @@
           <tr>
             <td><%= encounter.identifier&.first&.value %><%# TODO do the proper query %></td>
             <td><%= display_date encounter.meta&.lastUpdated %></td>
-            <td><%= display_date @specimen_hash.values.select{|specimen| specimen.subject == encounter.subject}.first&.collection&.collectedDateTime %></td>
+            <td><%= display_date find_by_subject(@specimen_array, encounter)&.collection&.collectedDateTime %></td>
             <td><%= display_date encounter.period&.start %></td>
-            <td><%= @patients_hash[encounter.subject.reference]&.gender %></td>
             <td><%= display_human_name @patients_hash[encounter.subject.reference]&.name&.first %></td>
             <td><%= display_date @patients_hash[encounter.subject.reference]&.birthDate %></td>
-            <td>TODO</td>
+            <td><%= @patients_hash[encounter.subject.reference]&.gender %></td>
+            <td><%= find_by_subject(@questionnaire_responses_array, encounter).item.fetch(5)&.answer&.first&.valueCoding&.code %></td>
             <td><%= link_to "View", encounter_path(encounter.id) %></td>
           </tr>
         <% end %>

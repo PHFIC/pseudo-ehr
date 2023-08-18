@@ -40,14 +40,14 @@ class EncountersController < ApplicationController
         # GET https://hapi.fhir.org/baseR4/QuestionnaireResponse?patient=Patient/123,Patient/456
         fhir_response = @fhir_client.search(FHIR::QuestionnaireResponse, search: {parameters: { 'patient' => @patients_hash.keys.join(',') }})
         redirect_to(root_path, alert: 'FHIR Query failed, please check if server is running at URL.') and return unless fhir_response
-        @fhir_queries << ["#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"]
-        @questionnaire_responses_hash = map_reference_to_resource(fhir_response.resource, 'QuestionnaireResponse')
+        @fhir_queries << "#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"
+        @questionnaire_responses_array = fhir_response.resource.entry.map { |entry| entry.resource }
 
         # GET https://hapi.fhir.org/baseR4/Specimen?patient=Patient/123,Patient/456
-        fhir_response = @fhir_client.search(FHIR::QuestionnaireResponse, search: {parameters: { 'patient' => @patients_hash.keys.join(',') }})
+        fhir_response = @fhir_client.search(FHIR::Specimen, search: {parameters: { 'patient' => @patients_hash.keys.join(',') }})
         redirect_to(root_path, alert: 'FHIR Query failed, please check if server is running at URL.') and return unless fhir_response
-        @fhir_queries << ["#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"]
-        @specimen_hash = map_reference_to_resource(fhir_response.resource, 'Specimen')
+        @fhir_queries << "#{fhir_response.request[:method].capitalize} #{fhir_response.request[:url]}"
+        @specimen_array = fhir_response.resource.entry.map { |entry| entry.resource }
 
     end
     
@@ -74,4 +74,5 @@ class EncountersController < ApplicationController
     def map_reference_to_resource(bundle, resource)
         bundle.entry.select{ |entry| entry.resource.resourceType == resource }.map{ |entry| [resource + '/' + entry.resource.id, entry.resource] }.to_h    
     end
+
 end
